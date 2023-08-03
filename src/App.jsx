@@ -33,8 +33,8 @@ const App = () => {
     const existItem = cartItems.find((c) => c.id == item.id);
 
     if (existItem.quantity === 1) {
-      const newDate = cartItems.filter((c) => c.id !== existItem.id);
-      setCartItems(newDate);
+      const newData = cartItems.filter((c) => c.id !== existItem.id);
+      setCartItems(newData);
     } else {
       const newData = cartItems.map((c) =>
         c.id === existItem.id
@@ -42,16 +42,29 @@ const App = () => {
           : c
       );
       setCartItems(newData);
+      show(newData)
     }
   };
 
   const onCheckout = () => {
-    telegram.MainButton.text = "Sotib olish :)";
-    telegram.MainButton.show();
+    telegram.MainButton.text = 'Sotib olish :)';
+		telegram.MainButton.show();
   };
 
   const onSendData = useCallback(() => {
-    telegram.sendData(JSON.stringify(cartItems));
+    const queryId = telegram.initDataUnsave?.query_id;
+
+    if(queryId){
+      fetch("https://localhost:8000/web-data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(cartItems),
+      })
+    } else{
+      telegram.sendData(JSON.stringify(cartItems));
+    }
   }, [cartItems]);
 
   useEffect(() => {
@@ -71,6 +84,7 @@ const App = () => {
             course={course}
             onAddItem={onAddItem}
             onRemoveItem={onRemoveItem}
+            onCheckout={onCheckout}
           />
         ))}
       </div>
