@@ -53,19 +53,19 @@ const App = () => {
 
   const onSendData = useCallback(() => {
     telegram.sendData(JSON.stringify(cartItems));
-    // const queryId = telegram.initDataUnsave?.query_id;
+    const queryId = telegram.initDataUnsave?.query_id;
 
-    // if(queryId){
-    //   fetch("https://localhost:8000/web-data", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(cartItems),
-    //   })
-    // } else{
-    //   telegram.sendData(JSON.stringify({products: cartItems, queryId: queryId}));
-    // }
+    if(queryId){
+      fetch("https://localhost:8000/web-data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(cartItems),
+      })
+    } else{
+      telegram.sendData(JSON.stringify({products: cartItems, queryId: queryId}));
+    }
   }, [cartItems]);
 
   useEffect(() => {
